@@ -58,24 +58,70 @@ class Cart:
 
     # 장바구니 내용 출력 
     def show(self):
-        
+        line = "-" * 40
+        print(line)
+
+        if self.is_empty():
+            print("장바구니 비었습니다.")
+
+        for p, q in self.items.items():
+            # 제품명 x 수량 = 총합계 
+            print(f"{p.name:<10} x {q:<3} = {p.price * q:>12,}원")
+
+        print(line)
+        print(f"{'상품 합계':<10} {self.subtotal():>15,}원")
+        print(f"{'배송비':<10} {self.shipping():>15,}원")
+        print(f"{'결제 금액':<10} {self.total():>15,}원")
+        print(line)
+
+    # 결제 후 재고 및 장바구니 뒷처리
+    def checkout(self):
+        if self.is_empty(): return
+
+        self.show()
+        # 재고 감소 처리
+        for p, q in self.items.items():
+            p.stock -= q
+
+        # 장바구니 비우기 
+        self.items.clear()
+
+        # 결제 성공 여부 SKIP
+        print("결제가 완료되었습니다. 감사합니다.")
+
 
 # ------------------------------------------------------------
 # 테스트 코드
 # ------------------------------------------------------------
 # 제품 인스턴스 생성 
 tumbler = Product("텀블러", 15_000, 10)
-mousepad = Product("마우스패드", 9_000, 0)
+earphone = Product("무선 이어폰", 89_000, 3)
+
 # 카트 인스턴스 생성
 cart = Cart()
-cart.add(tumbler, 10)
-cart.remove(tumbler, 3)
-cart.remove(mousepad, 3)
-cart.remove(tumbler, 8) # 현재 재고 7 < 8 => 전체 삭제 
+cart.add(tumbler, 3)
+cart.add(earphone, 2)
+cart.checkout()
 
-print("남은 종류:", len(cart.items))
+print(tumbler)
+print(earphone)
 
 
+
+
+
+
+
+
+
+
+#cart.remove(earphone, 3)
+#cart.remove(tumbler, 8) # 현재 재고 7 < 8 => 전체 삭제 
+
+
+
+
+# print("남은 종류:", len(cart.items))
 
 # cart.add(tumbler, 2)  # 실패 : 재고부족
 # cart.add(tumbler, 1)  # 성공 
